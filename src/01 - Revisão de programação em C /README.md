@@ -1,8 +1,6 @@
 # 01 - Revisão de Programação em C
 
-Nesta pasta apresentamos alguns exemplos que abordam os aspectos
-básicos introduzidos nas disciplinas CET635 - Linguagem de Programação I e
-CET641 - Linguagem de Programação II.
+Nesta pasta apresentamos alguns exemplos que abordam os aspectos básicos introduzidos nas disciplinas CET635 - Linguagem de Programação I e CET641 - Linguagem de Programação II.
 
 * Estrutura de um programa em __C__: a função _main()_;
 * Tipos de dados básicos em __C__, Declaração de variáveis;
