@@ -25,18 +25,9 @@ int incAluno(TAluno aluno, TListAlunos *lista);
 int remAluno(TAluno *aluno, TListAlunos *lista);
 void ordenaLista(TListAlunos *lista);
 
-TListAlunos* initListaAluno(int cap, int eOrd)
-{
-    TListAlunos *lista;
-    lista = (TListAlunos*) malloc(sizeof(TListAlunos));
-    lista->tam = 0;
-    lista->cap = cap;
-    lista->eOrd = eOrd;
-    if(eOrd)
-    {
-        lista->aluno = (TAluno*) malloc(cap*sizeof(TAluno));
-    }else{
-        lista->aluno = (TAluno*) malloc((cap+1)*sizeof(TAluno));
-    }
-    return lista;
-}
+TListAlunos* uniaoListas(TListAlunos *listaA, TListAlunos *listaB);
+TListAlunos* interListas(TListAlunos *listaA, TListAlunos *listaB);
+TListAlunos* diferListas(TListAlunos *listaA, TListAlunos *listaB);
+int buscaPorNome(char nome[], TListAlunos *lista);
+int buscaPorEMail(char email[], TListAlunos *lista);
+
