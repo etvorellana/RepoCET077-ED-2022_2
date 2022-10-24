@@ -29,10 +29,10 @@ int buscaAluno(int nm, TListAlunos *lista);
 int incAluno(TAluno aluno, TListAlunos *lista);
 int remAluno(TAluno *Taluno, TListAlunos *Tlista);
 void criaheap(TAluno *lista, int i, int f);
-void HeapSort(TListAlunos *infolistas, TAluno *lista, int tam);
+void HeapSort(TListAlunos *lista);
 
 TListAlunos *uniaoListas(TListAlunos *listaA, TListAlunos *listaB);
-void interListas(TListAlunos *listaA, TListAlunos *listaB, TListAlunos *listaC);
+TListAlunos *interListas (TListAlunos listaA, TListAlunos listaB);
 TListAlunos *diferListas(TListAlunos *listaA, TListAlunos *listaB);
 int buscaPorNome(char nome[], TListAlunos *lista);
 int buscaAlunoEmail(char *email, TListAlunos *lista);

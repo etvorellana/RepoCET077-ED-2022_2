@@ -8,8 +8,7 @@ int main(void) {
 
   listaA = initListaAluno(LSIZE, FALSE);
   listaB = initListaAluno(LSIZE, TRUE);
-  listaC = initListaAluno(listaA->cap, listaA->eOrd);
-  
+
   gerarAluno(listaA, 4);
   gerarAluno(listaB, 4);
   
@@ -19,7 +18,7 @@ int main(void) {
   printf("\n\nLISTA B ORDENADA\n\n");
   ExibirAluno(listaB);
   
-  HeapSort(listaA, listaA->aluno, listaA->tam);
+  HeapSort(listaA);
   printf("\n\nLISTA A ORDENADA\n\n");
   ExibirAluno(listaA);
   
@@ -49,7 +48,8 @@ int main(void) {
     listaA->aluno[pos].email);
   }
   
-  interListas(listaA, listaB, listaC);
+  listaC = interListas(*listaA, *listaB);
+  printf ("LISTA C COM A INTERSECÇÃO DE ELMENTOS DA LISTA A E B\n");
   ExibirAluno(listaC);
 
   return 0;

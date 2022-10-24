@@ -53,34 +53,32 @@ int buscaAlunoEmail(char *email, TListAlunos *lista) {
 
 
 int buscaBin(int matricula, TListAlunos *lista) {
-  int inicio = 0;
-  int fim = lista->tam - 1;
-  int i;
+  if(lista->tam == 0) return 0;
+  else {
+    int inicio = 0;
+    int fim = lista->tam - 1;
+    int i;
 
-  while (inicio <= fim) {
-    i = (inicio + fim) / 2;
+    while (inicio <= fim) {
+      i = (inicio + fim) / 2;
+      
+      if (lista->aluno[i].numMatricula == matricula) {
+        return i;
+      }
+
+      if (lista->aluno[i].numMatricula < matricula) {
+        inicio = i + 1;
+      } else {
+        fim = i - 1;
+      }
+    }
     
-    if (lista->aluno[i].numMatricula == matricula) {
-      printf("aluno encontrado!!!\n");
-      return i;
-    }
-
-    if (lista->aluno[i].numMatricula < matricula) {
-      inicio = i + 1;
-    } else {
-      fim = i;
-    }
+    return i;
   }
-  
-  printf("Estou no loop");
-  
-  return i;
 }
 
 
-/*
-** Retorna True=1 se o aluno for incluido e False=0 se não for incluido na lista
-*/
+// Retorna True=1 se o aluno for incluido e False=0 se não for incluido na lista
 int incAluno(TAluno registro, TListAlunos *Tlista) {
   int posicao = buscaAluno(registro.numMatricula, Tlista), tam = Tlista->tam;
 
@@ -121,9 +119,7 @@ int incAluno(TAluno registro, TListAlunos *Tlista) {
 }
 
 
-/*
-** Retorna True=1 se o aluno for excluido e False=0 se não for excluido na lista
-*/
+// Retorna True=1 se o aluno for excluido e False=0 se não for excluido na lista
 int remAluno(TAluno *Taluno, TListAlunos *Tlista) {
   if (Tlista->tam == 0) {
     return FALSE;
@@ -158,23 +154,39 @@ int remAluno(TAluno *Taluno, TListAlunos *Tlista) {
 }
 
 
-// Retorna uma lista que tem como elementos os elementos da listaA presentes
-// também na listaB
-void interListas(TListAlunos *listaA, TListAlunos *listaB, TListAlunos *listaC) {
-  // a intersecção "herda" a cap e eOrd da listaA, pois se for ordenada ela
-  // procura os elementos em ordem e a cap dela não pode ser maior que a da
-  // listaA (a cap seria atingida caso todos so elementos de A estejam em B)
-  for (int i = 0; i < listaA->tam; i++) {
-    int pos = buscaSeq(listaA->aluno[i].numMatricula, listaB);
-      
-    // se a lista não for ordenada ela retorna pos = tam caso o elemento não
-    // esteja na lista, então é só verificar se pos<tam, caso seja o elemento
-    // de A está em B
-    if (pos < listaB->tam) {
-      listaC->aluno[listaC->tam] = listaA->aluno[i];
-      listaC->tam++;
+//Retorna uma lista que tem como elementos os elementos da listaA presentes também na listaB
+TListAlunos* interListas(TListAlunos listaA, TListAlunos listaB){
+    TListAlunos *inter = initListaAluno(listaA.cap, listaA.eOrd);
+    
+    // a intersecção "herda" a cap e eOrd da listaA, pois se for ordenada ela prociura os elementos em ordem
+    // e a cap dela não pode ser maior que a da listaA (a cap seria atingida caso todos so elementos de A estejam em B)
+    if(listaB.eOrd) {
+        for (int i=0; i < listaA.tam; i++) {
+            int pos = buscaAluno(listaA.aluno[i].numMatricula, &listaB);
+            
+            if (listaA.aluno[i].numMatricula == listaB.aluno[pos].numMatricula) { 
+              // se a lista for ordenada a busca retorna onde ele esta ou caso não esteja onde ele deveria estar
+              // então é só comparar se o elemento de A que eu mandei procurar é igual ao que B[pos] que
+              // a função em retornou, caso sejam iguais
+              inter->aluno[inter->tam].numMatricula = listaA.aluno[i].numMatricula;
+              inter->tam++;
+              // o inter.tam marca a posição onde o próximo elemento será colocado, e sempre que for colocado o tam é incrementado
+            }
+        }
     }
-  }
+    else {
+        for (int i=0; i < listaA.tam; i++) {
+            int pos = buscaAluno(listaA.aluno[i].numMatricula, &listaB);
+            
+            //se a lista não for ordenada ela retorna pos = tam caso o elemento não esteja na lista, então é só
+            //verificar se pos<tam, caso seja o elemento de A está em B
+            if (pos < listaB.tam){
+                inter->aluno[inter->tam].numMatricula = listaA.aluno[i].numMatricula;
+                inter->tam++;
+            }
+    }
+    return inter;
+    }
 }
 
 
@@ -210,7 +222,7 @@ void gerarAluno(TListAlunos *setTlistaAlunos, int tam) {
   setTlistaAlunos->tam = tam;
 
   if (setTlistaAlunos->eOrd) {
-    HeapSort(setTlistaAlunos, setTlistaAlunos->aluno, setTlistaAlunos->tam);
+    HeapSort(setTlistaAlunos);
   }
 }
 
@@ -227,24 +239,29 @@ void ExibirAluno(TListAlunos *getTlistaAlunoTaluno) {
 }
 
 
-void HeapSort(TListAlunos *infolistas, TAluno *lista, int tam) {
+void HeapSort(TListAlunos *lista) {
+  if (lista->eOrd){
+    printf("A lista ja esta ordenada\n");
+    return;
+  }
+  int tam = lista->tam;
   TAluno aluno;
   int i;
   
   for (i = (tam - 1) / 2; i >= 0;
        i--) {                // Voltando da metade do vetor até o começo dele
-    criaheap(lista, i, tam); // Cria um heap dos dados
+    criaheap(lista->aluno, i, tam); // Cria um heap dos dados
   }
   
   for (i = tam - 1; i >= 1; i--) { // Pega o maior elemento da heap e coloca na
                                    // ultima posição do vetor
-    aluno = lista[0];
-    lista[0] = lista[i];
-    lista[i] = aluno; // Reconstruir heap ordenada
-    criaheap(lista, 0, i - 1);
+    aluno = lista->aluno[0];
+    lista->aluno[0] = lista->aluno[i];
+    lista->aluno[i] = aluno; // Reconstruir heap ordenada
+    criaheap(lista->aluno, 0, i - 1);
   }
   
-  infolistas->eOrd = TRUE;
+  lista->eOrd = TRUE;
 }
 
 
