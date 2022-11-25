@@ -56,7 +56,7 @@ int buscaBin(int matricula, TListAlunos *lista) {
   if(lista->tam == 0) return 0;
   else {
     int inicio = 0;
-    int fim = lista->tam - 1;
+    int fim = lista->tam;
     int i;
 
     while (inicio <= fim) {
@@ -67,9 +67,9 @@ int buscaBin(int matricula, TListAlunos *lista) {
       }
 
       if (lista->aluno[i].numMatricula < matricula) {
-        inicio = i + 1;
+        inicio = ++i;
       } else {
-        fim = i - 1;
+        fim = --i;
       }
     }
     
@@ -128,7 +128,6 @@ int remAluno(TAluno *Taluno, TListAlunos *Tlista) {
   int posicao, j;
 
   posicao = buscaAluno(Taluno->numMatricula, Tlista);
-  printf("\n\nPOSICAO %d\n\n", posicao);
 
   // Caso o aluno não seja encontrado na lista
   if (Tlista->eOrd) {
