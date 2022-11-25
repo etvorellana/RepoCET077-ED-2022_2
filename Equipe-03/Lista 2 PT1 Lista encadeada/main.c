@@ -2,28 +2,29 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct Pessoa{
-    char nome[50];
-    int idade;
-    float altura;
-    struct Pessoa *prox;
-} Pessoa;
+typedef struct TAluno{
+  int matricula; // chave com 9 dígitos (INT_MAX +2147483647)
+  char nome[100];   // nome com até 99 caracteres
+  char email[100];  // eMail com até 99 caracteres
+  struct TAluno *prox;
+  
+} TAluno;
 
-void empilha(Pessoa**, char[], int, float);
-void desempilha(Pessoa**);
-void imprime_pilha(Pessoa*);
-void enfileira(Pessoa**, char[], int, float);
-void desenfileira(Pessoa**);
-void imprime_fila(Pessoa*);
+void empilha(TAluno**, char[], int, char[]);
+void desempilha(TAluno**);
+void imprime_pilha(TAluno*);
+void enfileira(TAluno**, char[], int, char[]);
+void desenfileira(TAluno**);
+void imprime_fila(TAluno*);
 void menu();
 
 int main(){
-    Pessoa *pilha = NULL;
-    Pessoa *fila = NULL;
+    TAluno *pilha = NULL;
+    TAluno *fila = NULL;
     int opcao;
-    char nome[50];
-    int idade;
-    float altura;
+    char nome[100];
+    int matricula;
+    char email[100];
     do{
         menu();
         scanf("%d", &opcao);
@@ -31,11 +32,11 @@ int main(){
             case 1:
                 printf("Digite o nome: ");
                 scanf("%s", nome);
-                printf("Digite a idade: ");
-                scanf("%d", &idade);
-                printf("Digite a altura: ");
-                scanf("%f", &altura);
-                empilha(&pilha, nome, idade, altura);
+                printf("Digite a matricula: ");
+                scanf("%d", &matricula);
+                printf("Digite o email: ");
+                scanf("%s", email);
+                empilha(&pilha, nome, matricula, email);
                 break;
             case 2:
                 desempilha(&pilha);
@@ -46,11 +47,11 @@ int main(){
             case 4:
                 printf("Digite o nome: ");
                 scanf("%s", nome);
-                printf("Digite a idade: ");
-                scanf("%d", &idade);
-                printf("Digite a altura: ");
-                scanf("%f", &altura);
-                enfileira(&fila, nome, idade, altura);
+                printf("Digite a matricula: ");
+                scanf("%d", &matricula);
+                printf("Digite o email: ");
+                scanf("%s", email);
+                enfileira(&fila, nome, matricula, email);
                 break;
             case 5:
                 desenfileira(&fila);
@@ -68,51 +69,49 @@ int main(){
     return 0;
 }
 
-
-void empilha(Pessoa **pilha, char nome[], int idade, float altura){
-    Pessoa *novo = (Pessoa*) malloc(sizeof(Pessoa));
+void empilha(TAluno **pilha, char nome[], int matricula, char email[]){
+    TAluno *novo = (TAluno*)malloc(sizeof(TAluno));
     strcpy(novo->nome, nome);
-    novo->idade = idade;
-    novo->altura = altura;
+    novo->matricula = matricula;
+    strcpy(novo->email, email);
     novo->prox = *pilha;
     *pilha = novo;
 }
 
-void desempilha(Pessoa **pilha){
+void desempilha(TAluno **pilha){
     if(*pilha == NULL){
         printf("Pilha vazia!\n");
     }else{
-        Pessoa *aux = *pilha;
+        TAluno *aux = *pilha;
         *pilha = (*pilha)->prox;
         free(aux);
     }
 }
 
-void imprime_pilha(Pessoa *pilha){
+void imprime_pilha(TAluno *pilha){
     if(pilha == NULL){
         printf("Pilha vazia!\n");
     }else{
-        Pessoa *aux = pilha;
+        TAluno *aux = pilha;
         while(aux != NULL){
             printf("Nome: %s\n", aux->nome);
-            printf("Idade: %d\n", aux->idade);
-            printf("Altura: %.2f\n", aux->altura);
+            printf("Matricula: %d\n", aux->matricula);
+            printf("Email: %s\n", aux->email);
             aux = aux->prox;
         }
     }
 }
 
-
-void enfileira(Pessoa **fila, char nome[], int idade, float altura){
-    Pessoa *novo = (Pessoa*) malloc(sizeof(Pessoa));
+void enfileira(TAluno **fila, char nome[], int matricula, char email[]){
+    TAluno *novo = (TAluno*)malloc(sizeof(TAluno));
     strcpy(novo->nome, nome);
-    novo->idade = idade;
-    novo->altura = altura;
+    novo->matricula = matricula;
+    strcpy(novo->email, email);
     novo->prox = NULL;
     if(*fila == NULL){
         *fila = novo;
     }else{
-        Pessoa *aux = *fila;
+        TAluno *aux = *fila;
         while(aux->prox != NULL){
             aux = aux->prox;
         }
@@ -120,31 +119,31 @@ void enfileira(Pessoa **fila, char nome[], int idade, float altura){
     }
 }
 
-
-void desenfileira(Pessoa **fila){
+void desenfileira(TAluno **fila){
     if(*fila == NULL){
         printf("Fila vazia!\n");
     }else{
-        Pessoa *aux = *fila;
+        TAluno *aux = *fila;
         *fila = (*fila)->prox;
         free(aux);
     }
 }
 
-
-void imprime_fila(Pessoa *fila){
+void imprime_fila(TAluno *fila){
     if(fila == NULL){
         printf("Fila vazia!\n");
     }else{
-        Pessoa *aux = fila;
+        TAluno *aux = fila;
         while(aux != NULL){
             printf("Nome: %s\n", aux->nome);
-            printf("Idade: %d\n", aux->idade);
-            printf("Altura: %.2f\n", aux->altura);
+            printf("Matricula: %d\n", aux->matricula);
+            printf("Email: %s\n", aux->email);
             aux = aux->prox;
         }
     }
 }
+
+
 
 void menu(){
     printf("1 - Empilhar\n");
