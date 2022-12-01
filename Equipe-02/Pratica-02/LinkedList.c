@@ -4,11 +4,15 @@
 #include <string.h>
 #include <locale.h>
 
+typedef struct {
+    int numMatricula;
+    char nome[100];
+    char email[100];
+}Taluno;
+
 typedef struct no
 {
-  int numMatricula;
-  char email[100];
-  char nome[100];
+  Taluno aluno;
   struct no *proximoNo;
 } No;
 
@@ -22,7 +26,7 @@ void imprimir(No *lista);
 
 No *buscar(No *lista, int id);
 
-No *remover(No **lista, int valor);
+Taluno remover(No *head, int valor);
 
 int main(void)
 {
@@ -81,7 +85,7 @@ int main(void)
       printf("\nInforme o numMatricula Para Remover:");
       scanf("%d", &numMatricula);
 
-      rem = remover(&lista, numMatricula);
+      remover(&lista, numMatricula);
       if (rem)
       {
         printf("\nElemento Removido: %d\n", numMatricula);
@@ -105,70 +109,46 @@ int main(void)
 No *inicializar()
 {
   No *head = (No *)malloc(sizeof(No));
-  int valor = 2022;
-  valor *= 10;
-  valor += (1 + rand() % 1);
-  valor *= 10000;
-  valor += (rand() % 10000);
-
-  const char alf[] = {"ABCDEFGHIJKLMNOPQRSTUVWXYZ"};
-  sprintf(head->nome, "%c%c%c%c%c %c%c%c%c%c%c",
-          alf[rand() % 26], alf[rand() % 26], alf[rand() % 26],
-          alf[rand() % 26], alf[rand() % 26], alf[rand() % 26],
-          alf[rand() % 26], alf[rand() % 26], alf[rand() % 26],
-          alf[rand() % 26], alf[rand() % 26]);
-  sprintf(head->email, "%d@uesc.br", head->numMatricula);
-  if (head)
-  {
-    head->numMatricula = valor;
     head->proximoNo = NULL;
     return head;
-  }
-  else
-  {
-    printf("erro\n");
-    return NULL;
-  }
-  return NULL;
-}
-void inserir(No *head, int valor, char *nome, char *email)
-{
-  No *aux, *node = (No *)malloc(sizeof(No));
-  if (head->proximoNo == NULL)
-  {
-    node->numMatricula = valor;
-    strcpy(node->email, email);
-    strcpy(node->nome, nome);
-    node->proximoNo = NULL;
-    head->proximoNo = node;
-  }
-  else
-  {
-    node->numMatricula = valor;
-    strcpy(node->email, email);
-    strcpy(node->nome, nome);
-    aux = head->proximoNo;
-    head->proximoNo = node;
-    node->proximoNo = aux;
-  }
 }
 
-void menu()
+void inserir(No *head, int mat, char *nome, char *email)
 {
-  printf("\n1 - Inserir Elemento na Lista\n");
-  printf("2 - Mostra Lista\n");
-  printf("3 - Buscar\n");
-  printf("4 - Remover\n");
-  printf("5 - Sair\n");
-  printf("Opção: \n");
+    No *busca = buscar(head, mat); 
+    if (busca == NULL){
+
+        No *aux, *node = (No *)malloc(sizeof(No));
+        if (head->proximoNo == NULL)
+        {
+            node->aluno.numMatricula = mat;
+            strcpy(node->aluno.email, email);
+            strcpy(node->aluno.nome, nome);
+            node->proximoNo = NULL;
+            head->proximoNo = node;
+        }
+        else
+        {
+            node->aluno.numMatricula = mat;
+            strcpy(node->aluno.email, email);
+            strcpy(node->aluno.nome, nome);
+            aux = head->proximoNo;
+            head->proximoNo = node;
+            node->proximoNo = aux;
+        }
+    } else {
+        printf ("Este aluno ja esta na lista");
+        return;
+    }
 }
 
 void imprimir(No *lista)
 {
   int pos = 0;
+  lista = lista->proximoNo;
   while (lista != NULL)
   {
-    printf("\n[%d] - Matricula = %d\nNome = %s\nEmail = %s\n", pos, lista->numMatricula, lista->nome, lista->email);
+    printf("\n[%d] - Matricula = %d\nNome = %s\nEmail = %s\n", pos, lista->aluno.numMatricula, lista->aluno.nome, lista->aluno.email);
     lista = lista->proximoNo;
     pos++;
   }
@@ -180,9 +160,9 @@ No *buscar(No *lista, int id)
   int pos = 0;
   while (lista != NULL)
   {
-    if (lista->numMatricula == id)
+    if (lista->aluno.numMatricula == id)
     {
-      printf("id: %d\n", lista->numMatricula);
+      printf("id: %d\n", lista->aluno.numMatricula);
       local = lista;
       return local;
     }
@@ -192,28 +172,27 @@ No *buscar(No *lista, int id)
   return NULL;
 }
 
-No *remover(No **lista, int valor)
-{
-  No *aux, *pos = NULL;
+Taluno remover(No *head, int valor) {
+  if (head->proximoNo == NULL) {
+    printf("Lista vazia");
+    return;
+  }
 
-  if (*lista)
-  {
-    if ((*lista)->numMatricula == valor)
-    {
-      pos = *lista;
-      *lista = pos->proximoNo;
+  Taluno rem;
+  No *aux;
+
+  while (head->proximoNo->proximoNo != NULL && head->proximoNo != NULL) {
+    if (head->proximoNo->aluno.numMatricula == valor) {
+        printf ("\n%d sera removido\n", valor);
+        rem = head->proximoNo->aluno;
+        aux = head->proximoNo;
+        head->proximoNo = head->proximoNo->proximoNo;
+        free(aux);
+        return rem;
     }
-    else
-    {
-      aux = *lista;
-      while (aux->proximoNo && aux->proximoNo->numMatricula != valor)
-        aux = aux->proximoNo;
-      if (aux->proximoNo)
-      {
-        pos = aux->proximoNo;
-        aux->proximoNo = pos->proximoNo;
-      }
+    else {
+        head = head->proximoNo;
     }
   }
-  return pos;
+  return;
 }
